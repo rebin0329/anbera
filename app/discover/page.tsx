@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Navbar } from "@/components/anbera/Navbar";
 import { Footer } from "@/components/anbera/Footer";
-import { runScoringEngine } from "@/lib/scoring/engine";
+import { submitBusinessDiscovery } from "./actions";
 import {
   AnalysisOutput,
   BusinessInput,
@@ -55,17 +55,23 @@ export default function DiscoverPage() {
     setErrorMessage(null);
 
     try {
-      // Small graceful transition for perceptual continuity (no fake progress steps)
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      const output = await runScoringEngine({
+      const response = await submitBusinessDiscovery({
         name,
         industry,
         website: formData.website?.trim() || undefined,
         goal: formData.goal?.trim() || undefined,
       });
 
-      setAnalysisResult(output);
+      if (!response.success || !response.data) {
+        setErrorMessage(
+          response.error ||
+            "Unable to complete business analysis. Please verify your entries and try again."
+        );
+        setViewState("error");
+        return;
+      }
+
+      setAnalysisResult(response.data);
       setViewState("results");
     } catch {
       setErrorMessage(
@@ -341,13 +347,19 @@ export default function DiscoverPage() {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="shrink-0 px-4 py-2 rounded border border-white/10 bg-[#080808] text-xs font-mono uppercase tracking-wider text-[#8A8A8A] hover:text-[#F5F5F5] hover:border-white/25 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#3682F6]"
-                >
-                  Analyze Another Business
-                </button>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#080808] border border-white/10 text-[10px] font-mono text-[#8A8A8A]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    PERSISTED TO FOUNDATION
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded border border-white/10 bg-[#080808] text-xs font-mono uppercase tracking-wider text-[#8A8A8A] hover:text-[#F5F5F5] hover:border-white/25 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#3682F6]"
+                  >
+                    Analyze Another Business
+                  </button>
+                </div>
               </div>
 
               {/* Hero Score Diagnostic Card */}
