@@ -73,7 +73,7 @@ export function Navbar() {
           </Link>
 
           <Button
-            href="#discover"
+            href="/discover"
             variant="primary"
             size="sm"
             className="hidden sm:inline-flex"
@@ -171,7 +171,7 @@ export function Navbar() {
               Sign In
             </Link>
             <Button
-              href="#discover"
+              href="/discover"
               variant="primary"
               size="lg"
               fullWidth

@@ -44,7 +44,7 @@ export function Hero() {
             {/* Action Cluster */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto pt-2">
               <Button
-                href="#discover"
+                href="/discover"
                 variant="primary"
                 size="lg"
                 icon={
